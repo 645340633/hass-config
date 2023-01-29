@@ -1,0 +1,94 @@
+server:
+  template:
+    - base
+    - sound_popup_only
+  variables:
+    state_on: >-
+      [[[
+        let mem_percent = states['sensor.deacon_mem_used'].state * 100 / states['sensor.deacon_mem_total'].state;
+        if (states['sensor.deacon_nvme0_temp'].state == 'unavailable' || states['sensor.deacon_nvme0_temp'].state > 65 || states['sensor.deacon_sda_temp'].state > 55 || mem_percent > 85) {
+          return true;
+        }
+        return false;
+      ]]]
+  tap_action: !include ../popup/server.yaml
+  hold_action: !include ../popup/server.yaml
+  state_display: >-
+    [[[
+      if (states['sensor.deacon_nvme0_temp'].state == 'unavailable') {
+        return "不可用";
+      }
+      if (states['sensor.deacon_nvme0_temp'].state > 65 || states['sensor.deacon_sda_temp'].state > 55) {
+        return "硬盘温度过高";
+      }
+      let mem_percent = states['sensor.deacon_mem_used'].state * 100 / states['sensor.deacon_mem_total'].state;
+      if (mem_percent > 95) {
+        return "急需重启";
+      }
+      if (mem_percent > 85) {
+        return "内存不足";
+      }
+      return "正常";
+    ]]]
+  custom_fields:
+    icon: >
+      <svg viewBox="0 0 24 24">
+        <path fill="#9da0a2" d="M4 5c-1.11 0-2 .89-2 2v10c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V7c0-1.11-.89-2-2-2H4m.5 2a1 1 0 0 1 1 1a1 1 0 0 1-1 1a1 1 0 0 1-1-1a1 1 0 0 1 1-1M7 7h13v10H7V7m1 1v8h3V8H8m4 0v8h3V8h-3m4 0v8h3V8h-3M9 9h1v1H9V9m4 0h1v1h-1V9m4 0h1v1h-1V9Z"/>
+      </svg>
+    circle: >
+      [[[{
+        let mem_percent = states['sensor.deacon_mem_used'].state * 100 / states['sensor.deacon_mem_total'].state;
+        const input = Math.round(mem_percent);
+        const radius = 20.5;
+        if (variables.state_on) {
+          const circumference = radius * 2 * Math.PI;
+          return `
+            <svg viewBox="0 0 50 50">
+              <style>
+                circle {
+                  transform: rotate(-90deg);
+                  transform-origin: 50% 50%;
+                  stroke-dasharray: ${circumference};
+                  stroke-dashoffset: ${circumference - input / 100 * circumference};
+                }
+                tspan {
+                  font-size: 10px;
+                }
+              </style>
+              <circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" />
+              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
+            </svg>
+          `;
+        }
+        return `
+          <svg viewBox="0 0 50 50">
+            <style>
+              circle {
+                transform: rotate(-90deg);
+                transform-origin: 50% 50%;
+              }
+              tspan {
+                font-size: 10px;
+              }
+            </style>
+            <circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="0" fill="#FFFFFF08" />
+            <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
+          </svg>
+        `;
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" stroke="#313638" stroke-width="0" fill="#FFFFFF08" style="
+        transform: rotate(-90deg); transform-origin: 50% 50%;" />
+        <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</text></svg>`; }
+      ]]]
+  styles:
+    custom_fields:
+      icon:
+        - width: 77%
+        - margin-left: -3%
+        - margin-top: 1%
+      circle:
+        - display: initial
+        - width: 90%
+        - letter-spacing: 0.03vw
+        - margin: -6% -6% 0 0
+        - justify-self: end
+        - opacity: 1

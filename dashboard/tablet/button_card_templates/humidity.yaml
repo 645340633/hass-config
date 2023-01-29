@@ -1,0 +1,56 @@
+humidity:
+  template:
+    - base
+    - sound_sensor
+  double_tap_action:
+    action: block
+  show_state: false
+  custom_fields:
+    circle: >
+      [[[ {
+      const humidity = Math.round(entity.state);
+      return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="#313638" stroke-width="1.5" fill="#FFFFFF08" style="
+      transform: rotate(-90deg); transform-origin: 50% 50%;" />
+      <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle" dominant-baseline="middle">${humidity}%</text></svg>`; } ]]]
+    graph:
+      card:
+        type: "custom:mini-graph-card"
+        line_color: "#3182b7"
+        line_width: 4
+        font_size: 75
+        hours_to_show: 12
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          labels: false
+        color_thresholds:
+          - value: 30
+            color: "#26c941"
+          - value: 35
+            color: "#64c91c"
+          - value: 38
+            color: "#d4c11c"
+          - value: 40
+            color: "#d1861d"
+          - value: 42
+            color: "#de4314"
+          - value: 55
+            color: "#fa0505"
+          - value: 60
+            color: "#c92626"
+  styles:
+    name: [top: 57%, left: -12%, width: 100%, position: absolute]
+    custom_fields:
+      graph: [bottom: 0%, left: 0%, width: 100%, position: absolute]
+      circle:
+        - display: initial
+        - width: 90%
+        - letter-spacing: 0.03vw
+        - margin: -6% -6% 0 0
+        - justify-self: end
+        - opacity: 1
+      icon:
+        - width: 67%
+        - fill: "#9da0a2"

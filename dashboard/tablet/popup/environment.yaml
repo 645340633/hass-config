@@ -1,0 +1,108 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: >
+      [[[
+        return !entity || entity.attributes.friendly_name;
+      ]]]
+    # timeout: 300000
+    size: >
+      [[[
+        if (document.body.scrollWidth > 800) {
+          return '';
+        }
+        return 'fullscreen';
+      ]]]
+    card_mod:
+      style:
+        #popup header
+        .: |
+          div.content {
+            margin-top: -24px !important;
+          }
+        hui-vertical-stack-card$apexcharts-card:
+          .: |
+            apexcharts-card {
+              margin: -10px -8px !important;
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              apexcharts-card {
+              margin: 0px !important;
+              }
+            }
+    content:
+      type: vertical-stack
+      cards:
+        - type: entities
+          card_mod:
+            class: content
+            style: |
+              #states {
+                padding-top: 1.2em;
+                padding-bottom: 0em;
+              }
+          entities:
+            - entity: >
+                [[[
+                  return entity.entity_id;
+                ]]]
+              name: >
+                [[[
+                  return '当前' + entity.attributes.friendly_name;
+                ]]]
+        - type: custom:apexcharts-card
+          layout: minimal
+          locale: zh-cn
+          graph_span: 24h
+          show:
+            loading: false
+          apex_config:
+            plotOptions:
+              area:
+                fillTo: end
+            grid:
+              padding:
+                top: -15
+            fill:
+              type: gradient
+              gradient:
+                type: vertical
+                opacityFrom: 0.8
+                opacityTo: 0
+                stops:
+                  - 0
+                  - 99
+                  - 100
+            stroke:
+              width: 4
+            tooltip:
+              style:
+                fontSize: 14px
+              x:
+                format: dddd HH:mm
+            chart:
+              height: 200px
+              offsetY: -30px
+            xaxis:
+              crosshairs:
+                show: false
+          series:
+            - entity: >
+                [[[
+                  return entity.entity_id;
+                ]]]
+              name: >
+                [[[
+                  return !entity || entity.attributes.friendly_name;
+                ]]]
+              color: >
+                [[[
+                  return variables.color;
+                ]]]
+              type: area
+              fill_raw: last
+              group_by:
+                func: avg
+                duration: 0.5h

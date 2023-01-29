@@ -1,0 +1,21 @@
+colorfulclous:
+  aspect_ratio: 1/1
+  show_name: false
+  show_entity_picture: true
+  template:
+    - sound_popup_only
+  double_tap_action:
+    action: block
+  variables:
+    skycon: >-
+      [[[
+        return entity.attributes.skycon;
+      ]]]
+  entity_picture: >
+    [[[
+      return `/hacsfiles/lovelace-colorfulclouds-weather-card/icons/animated/${variables.skycon}.svg`;
+    ]]]
+  styles:
+    entity_picture:
+      - width: 50%
+      - height: 50%

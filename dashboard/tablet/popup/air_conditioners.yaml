@@ -1,0 +1,91 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: 空调
+    style: >
+      --popup-max-width: calc(385px + 385px + 385px);
+      --ha-card-border-radius: 0;
+    card_mod:
+      style:
+        layout-card:
+          $grid-layout$:
+            # card divider border
+            .: |
+              #root {
+                  margin: -24px 0 !important;
+              }
+            hui-entities-card:
+              $: |
+                .card-content {
+                  padding: var(--tablet-popup-content-padding);
+                  padding-bottom: 0.8em;
+                }
+                ha-card {
+                  border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+                  border-radius: 0;
+                  transition: none;
+                }
+                /* portrait */
+                @media screen and (max-width: 1200px) {
+                  ha-card {
+                    border-right: none;
+                    border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+                  }
+                }
+              $hui-horizontal-stack-card:
+                # horizontal bottom buttons
+                $: |
+                  #root {
+                    justify-content: space-evenly;
+                    margin-top: 1.7em;
+                    max-width: 82vw; /* iphonex */
+                  }
+    content:
+      type: custom:layout-card
+      cards:
+        - type: grid
+          columns: 3
+          cards:
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_2
+              name: 餐厅
+              template:
+                - base
+                - climate3
+                - icon_climate3
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_5
+              name: 客厅
+              template:
+                - base
+                - climate3
+                - icon_climate3
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_4
+              name: 主卧
+              template:
+                - base
+                - climate3
+                - icon_climate3
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_3
+              name: 次卧
+              template:
+                - base
+                - climate3
+                - icon_climate3
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_0
+              name: 儿童房
+              template:
+                - base
+                - climate3
+                - icon_climate3
+            - type: custom:button-card
+              entity: climate.zhonghong_ac_1
+              name: 仓库
+              template:
+                - base
+                - climate3
+                - icon_climate3

@@ -1,0 +1,4 @@
+switch:
+  template:
+    - base
+    - sound_switch

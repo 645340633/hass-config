@@ -1,0 +1,234 @@
+light:
+  template:
+    - base
+    - circle
+    - loader
+    - sound_light
+  double_tap_action:
+    action: block
+  hold_action:
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        title: >
+          [[[
+            return !entity || entity.attributes.friendly_name;
+          ]]]
+        card_mod:
+          style:
+            #popup header
+            .:
+        content:
+          type: entities
+          card_mod:
+            style: |
+              #states {
+                padding-top: 0.5em;
+              }
+          entities: >
+            [[[
+              if (entity) {
+                  let lights = [],
+                      id = Boolean(entity.attributes.entity_id)
+                          ? [entity.entity_id].concat(entity.attributes.entity_id)
+                          : [entity.entity_id];
+
+                  for (let i = 0; i < id.length; i++) {
+                      lights.push({
+                          "type": "custom:mushroom-light-card",
+                          "entity": id[i],
+                          "fill_container": false,
+                          "primary_info": "name",
+                          "secondary_info": "state",
+                          "icon_type": "icon",
+                          "show_brightness_control": true,
+                          "use_light_color": true,
+                          "show_color_temp_control": true,
+                          "show_color_control": true,
+                          "collapsible_controls": true
+                      });
+                  }
+                  return lights;
+              }
+            ]]]
+  variables:
+    circle_input: >
+      [[[
+        if (entity) {
+            // if light group get brightness from child to remove bounce
+            let child = entity.attributes.entity_id,
+                brightness = child && states[child[0]].attributes.brightness
+                    ? Math.round(states[child[0]].attributes.brightness / 2.54)
+                    : Math.round(entity.attributes.brightness / 2.54);
+            return brightness === 0 && entity.state !== 'off'
+                ? 1
+                : brightness
+        }
+      ]]]
+    circle_input_unit: "%"
+
+color_light:
+  styles:
+    card:
+      - border-radius: 50%
+      - height: 4em
+      - width: 4em
+      - margin: 4px
+
+light_homekit:
+  template:
+    - base
+    - circle
+    - sound_light
+  double_tap_action:
+    action: block
+  variables:
+    circle_input: >
+      [[[ return entity === undefined || Math.round(entity.attributes.brightness / 2.54); ]]]
+  hold_action:
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        title: >
+          [[[ return entity.attributes.friendly_name ]]]
+        # timeout: 300000
+        size: >
+          [[[
+            if (document.body.scrollWidth > 800) {
+              return '';
+            }
+            return 'fullscreen';
+          ]]]
+        style: >
+          --popup-max-width: calc(385px + 385px + 385px);
+          --ha-card-border-radius: 0;
+        card_mod:
+          style:
+            hui-vertical-stack-card:
+              .: |
+                hui-vertical-stack-card {
+                  display: flex;
+                  justify-content: center;
+                }
+        content:
+          type: vertical-stack
+          cards:
+            - type: entities
+              entities:
+                - type: custom:light-popup-card
+                  entity: >
+                    [[[ return entity.entity_id ]]]
+                  icon: none
+                  fullscreen: false
+                  brightnessWidth: 130px
+                  brightnessHeight: 360px
+                  borderRadius: 1.7em
+                  sliderColoredByLight: true
+                  sliderTrackColor: rgba(25, 25, 25, 0.9)
+                  displayType: slider
+            - type: custom:hui-element
+              card_type: horizontal-stack
+              cards:
+                - type: custom:button-card
+                  styles:
+                    card:
+                      - background: "#d8d9e1"
+                  tap_action:
+                    action: call-service
+                    service: light.turn_on
+                    service_data:
+                      entity_id: >
+                        [[[ return entity.entity_id ]]]
+                      color_temp: 153
+                  template: color_light
+                - type: custom:button-card
+                  styles:
+                    card:
+                      - background: "#d5b08d"
+                  tap_action:
+                    action: call-service
+                    service: light.turn_on
+                    service_data:
+                      entity_id: >
+                        [[[ return entity.entity_id ]]]
+                      color_temp: 326
+                  template: color_light
+            - type: custom:hui-element
+              card_type: horizontal-stack
+              cards:
+                - type: custom:button-card
+                  styles:
+                    card:
+                      - background: "#ce944b"
+                  tap_action:
+                    action: call-service
+                    service: light.turn_on
+                    service_data:
+                      entity_id: >
+                        [[[ return entity.entity_id ]]]
+                      color_temp: 500
+                  template: color_light
+                - type: custom:button-card
+                  styles:
+                    card:
+                      [
+                        background:
+                          "radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 80%),
+                          conic-gradient(rgb(120, 39, 230), rgb(230, 34, 231), rgb(228, 5, 136), rgb(228, 25, 25),
+                          rgb(229, 105, 30), rgb(232, 226, 46), rgb(125, 230, 41), rgb(52, 232, 40), rgb(51, 231, 92),
+                          rgb(52, 232, 224), rgb(32, 125, 229), rgb(18, 39, 229), rgb(120, 39, 230))",
+                      ]
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      service: browser_mod.popup
+                      data:
+                        title: >
+                          [[[ return entity.attributes.friendly_name ]]]
+                        # timeout: 300000
+                        size: >
+                          [[[
+                            if (document.body.scrollWidth > 800) {
+                              return '';
+                            }
+                            return 'fullscreen';
+                          ]]]
+                        style: |
+                          --popup-max-width: calc(385px + 495px);
+                          --primary-color: transparent; /* hide timeout progress */
+                        card_mod:
+                          style:
+                            # card divider border
+                            layout-card$grid-layout$: |
+                              #root {
+                                margin: -24px 0 !important;
+                              }
+                              hui-vertical-stack-card {
+                                border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+                                border-radius: 0;
+                                transition: none;
+                              }
+                              /* phone */
+                              @media screen and (max-width: 800px) {
+                                hui-vertical-stack-card {
+                                  border-right: none;
+                                  border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+                                }
+                              }
+                        content:
+                          type: custom:layout-card
+                          cards:
+                            - type: custom:light-entity-card
+                              entity: >
+                                [[[ return entity.entity_id ]]]
+                              brightness: true
+                              color_temp: true
+                              full_width_sliders: false
+                              hide_header: true
+                              show_slider_percent: true
+                              smooth_color_wheel: true
+                              persist_features: true
+                              consolidate_entities: false
+                  template: color_light

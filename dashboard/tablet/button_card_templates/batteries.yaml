@@ -1,0 +1,94 @@
+batteries:
+  template:
+    - base
+    - sound_popup_only
+  tap_action:
+    action: navigate
+    navigation_path: /mattias-lovelace/batteries
+  hold_action:
+    action: null
+  triggers_update:
+    - sensor.48574301cfad_battery
+    - sensor.d1bf4138aafb_battery
+    - sensor.xuan_guan_men_ci_battery
+    - sensor.a4c138d7f119_battery
+    - sensor.xuan_guan_wu_xian_kai_guan_battery
+    - sensor.yang_tai_ren_ti_gan_ying_qi_battery
+    - sensor.yang_tai_wen_shi_du_chuan_gan_qi_battery
+    - sensor.zhu_wo_chuang_lian_battery
+    - sensor.zhu_wo_chuang_sha_battery
+    - sensor.yi_mao_jian_men_ci_battery
+    - sensor.xuan_guan_zhi_neng_an_jian_battery
+    - sensor.er_tong_fang_yi_ju_men_ci_zuo_battery
+    - sensor.er_tong_fang_yi_ju_men_ci_you_battery
+    - sensor.er_tong_fang_wu_xian_kai_guan_battery
+    - sensor.er_tong_fang_ren_ti_gan_ying_qi_battery
+    - sensor.cang_ku_men_ci_battery
+    - sensor.xuan_guan_ren_ti_gan_ying_qi_battery
+    - sensor.can_ting_chu_fang_wu_xian_kai_guan_battery
+    - sensor.chu_fang_chuang_lian_battery
+  variables:
+    battery_level: >-
+      [[[
+        var values = [100, 0];
+        var bats = ['sensor.chu_fang_chuang_lian_battery', 'sensor.48574301cfad_battery', 'sensor.d1bf4138aafb_battery', 'sensor.xuan_guan_men_ci_battery', 'sensor.a4c138d7f119_battery', 'sensor.xuan_guan_wu_xian_kai_guan_battery', 'sensor.yang_tai_ren_ti_gan_ying_qi_battery', 'sensor.yang_tai_wen_shi_du_chuan_gan_qi_battery', 'sensor.zhu_wo_chuang_lian_battery', 'sensor.zhu_wo_chuang_sha_battery', 'sensor.yi_mao_jian_men_ci_battery', 'sensor.xuan_guan_zhi_neng_an_jian_battery', 'sensor.er_tong_fang_yi_ju_men_ci_zuo_battery', 'sensor.er_tong_fang_yi_ju_men_ci_you_battery', 'sensor.er_tong_fang_wu_xian_kai_guan_battery', 'sensor.er_tong_fang_ren_ti_gan_ying_qi_battery', 'sensor.cang_ku_men_ci_battery', 'sensor.xuan_guan_ren_ti_gan_ying_qi_battery', 'sensor.can_ting_chu_fang_wu_xian_kai_guan_battery'];
+        for (var i=0,len=bats.length; i<len; i++) {
+          if (states[bats[i]].state <= 15) {
+            values[1] = values[1] + 1;
+          }
+          if (parseInt(states[bats[i]].state) < values[0]) {
+            values[0] = parseInt(states[bats[i]].state);
+          }
+        }
+        return values;
+      ]]]
+  state_display: >-
+    [[[
+      var values = variables.battery_level;
+      if (values[0] > 45) {
+        return "电量充足";
+      }
+      if (values[0] > 30) {
+        return "无需更换";
+      }
+      if (values[0] > 15) {
+        return "即将更换";
+      }
+      return values[1] + "个低电量";
+    ]]]
+  custom_fields:
+    icon: >
+      [[[
+        var lowest = variables.battery_level[0];
+        if (lowest == 100) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16.67 4H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 90) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 8H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 80) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 9H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 70) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 10H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 60) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 12H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 50) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 13H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 40) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 14H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 30) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 15H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 20) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 17H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        if (lowest >= 10) {return '<svg viewBox="0 0 24 24"><path fill="#9da0a2" d="M16 18H8V6h8m.67-2H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4Z"></path></svg>'}
+        return '<svg viewBox="0 0 12 12"><path fill="#9da0a2" d="M8,10H4l0-7h4 M8.3,2H7.5V1h-3v1H3.7C3.3,2,3,2.3,3,2.7v7.7C3,10.7,3.3,11,3.7,11h4.7C8.7,11,9,10.7,9,10.3V2.7 C9,2.3,8.7,2,8.3,2z"></path></svg>'
+      ]]]
+    circle: >
+      [[[{
+        var lowest = variables.battery_level[0];
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" stroke="#313638" stroke-width="0" fill="#FFFFFF08" style="
+        transform: rotate(-90deg); transform-origin: 50% 50%;" />
+        <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle" dominant-baseline="middle">${lowest}<tspan font-size="10">%</text></svg>`; }
+      ]]]
+  styles:
+    custom_fields:
+      icon:
+        - width: 77%
+        - margin-left: -3%
+        - margin-top: 1%
+      circle:
+        - display: initial
+        - width: 90%
+        - letter-spacing: 0.03vw
+        - margin: -6% -6% 0 0
+        - justify-self: end
+        - opacity: 1

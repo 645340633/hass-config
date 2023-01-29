@@ -1,0 +1,47 @@
+action: fire-dom-event
+haptic: medium
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: 天气预报
+    timeout: 300000
+    size: >
+      [[[
+        if (document.body.scrollWidth > 800) {
+          return '';
+        }
+        return 'fullscreen';
+      ]]]
+    style: |
+      --popup-max-width: calc(385px + 495px);
+      --primary-color: transparent; /* hide timeout progress */
+    card_mod:
+      style:
+        # card divider border
+        layout-card$grid-layout$: |
+          #root {
+            margin: -24px 0 !important;
+          }
+          hui-vertical-stack-card {
+            border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            transition: none;
+          }
+          /* phone */
+          @media screen and (max-width: 800px) {
+            hui-vertical-stack-card {
+              border-right: none;
+              border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+            }
+          }
+    content:
+      type: custom:layout-card
+      cards:
+        - type: custom:weather-card
+          entity: >
+            [[[ return entity.entity_id ]]]
+          houer_forecast: true
+          show_forecast: true
+          icon: /hacsfiles/lovelace-colorfulclouds-weather-card/icons/animated/
+          name: ""
+          secondary_info_attribute: ""

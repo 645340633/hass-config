@@ -1,0 +1,181 @@
+action: fire-dom-event
+haptic: medium
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: 门禁控制
+    timeout: 300000
+    size: >
+      [[[
+        if (document.body.scrollWidth > 800) {
+          return '';
+        }
+        return 'fullscreen';
+      ]]]
+    style: |
+      --popup-max-width: calc(385px + 495px);
+      --primary-color: transparent; /* hide timeout progress */
+    card_mod:
+      style:
+        hui-vertical-stack-card$tabbed-card:
+          .: |
+            tabbed-card {
+              width: 600px;
+              height: 520px;
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              tabbed-card {
+                width: auto;
+                # height: 350px;
+                height: 90vw;
+              }
+            }
+    content:
+      type: vertical-stack
+      cards:
+        - type: custom:tabbed-card
+          options:
+            defaultTabIndex: 0
+          tabs:
+            - card:
+                type: custom:webrtc-camera
+                url: rtsp地址
+              attributes:
+                label: 电梯
+            - card:
+                type: custom:webrtc-camera
+                url: rtsp地址
+              attributes:
+                label: 一楼
+            - card:
+                type: custom:webrtc-camera
+                url: rtsp地址
+              attributes:
+                label: 停车
+            - card:
+                type: custom:webrtc-camera
+                url: rtsp地址
+              attributes:
+                label: 北门
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_gate
+              tap_action:
+                haptic: success
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 打开北门门禁...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_base
+              tap_action:
+                haptic: success
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 打开一楼门禁...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_parking
+              tap_action:
+                haptic: success
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 打开停车楼门禁...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_elev_unlock
+              tap_action:
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 开放电梯楼层...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_elev_up
+              tap_action:
+                haptic: success
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 电梯上行...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000
+            - type: custom:button-card
+              template:
+                - menu_button2
+                - icon_access_elev_down
+              tap_action:
+                haptic: success
+                action: call-service
+                service: browser_mod.sequence
+                service_data:
+                  sequence:
+                    - service: mqtt.publish
+                      data:
+                        topic: mqtt topic
+                        payload: mqtt payload
+                    - service: browser_mod.notification
+                      data:
+                        message: 电梯下行...
+                    - service: browser_mod.delay
+                      data:
+                        time: 3000

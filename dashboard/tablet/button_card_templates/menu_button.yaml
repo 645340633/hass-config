@@ -1,0 +1,55 @@
+menu_button:
+  show_name: false
+  show_icon: false
+  aspect_ratio: 1/1
+  show_state: false
+  template:
+    - sound_popup_only
+  double_tap_action:
+    action: block
+  hold_action:
+    action: more-info
+  styles:
+    grid:
+      - grid-template-areas: |
+          "icon"
+      - grid-template-columns: auto
+      - grid-template-rows: auto
+      - align-items: center
+      - will-change: transform
+
+menu_button2:
+  show_name: false
+  styles:
+    card:
+      - height: 51px
+      - width: 51px
+    grid:
+      - grid-template-areas: |
+          "icon"
+      - grid-template-columns: auto
+      - grid-template-rows: auto
+      - align-items: center
+      - will-change: transform
+    custom_fields:
+      icon:
+        - width: 40%
+        - margin-left: 30%
+
+menu_button3:
+  show_name: false
+  styles:
+    card:
+      - height: 60px
+      - width: 60px
+    grid:
+      - grid-template-areas: |
+          "icon"
+      - grid-template-columns: auto
+      - grid-template-rows: auto
+      - align-items: center
+      - will-change: transform
+    custom_fields:
+      icon:
+        - width: 40%
+        - margin-left: 30%

@@ -1,0 +1,201 @@
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: 电梯
+    size: >
+      [[[
+        if (document.body.scrollWidth > 800) {
+          return '';
+        }
+        return 'fullscreen';
+      ]]]
+    style: >
+      --popup-max-width: calc(385px + 385px + 385px);
+      --ha-card-border-radius: 0;
+    card_mod:
+      style:
+        hui-vertical-stack-card$hui-grid-card:
+          .: |
+            hui-grid-card {
+              display: flex;
+              justify-content: center;
+            }
+        hui-vertical-stack-card$tabbed-card:
+          .: |
+            tabbed-card {
+              width: 600px;
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              tabbed-card {
+                width: auto;
+              }
+            }
+    content:
+      type: vertical-stack
+      cards:
+        - type: custom:tabbed-card
+          tabs:
+            - card:
+                type: custom:frigate-card
+                cameras:
+                  - camera_entity: camera.front_door
+                timeline:
+                  show_recordings: true
+                image: {}
+                menu: {}
+              attributes:
+                label: Frigate
+            - card:
+                type: custom:webrtc-camera
+                url: rtsp 地址
+              attributes:
+                label: WebRTC
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              entity: switch.xiaofang_ir_filter
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              entity: switch.xiaofang_ir_led
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              entity: switch.xiaofang_motion_tracking
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              entity: switch.xiaofang_night_mode
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              entity: switch.front_door_detect
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              entity: switch.front_door_recordings
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              entity: switch.front_door_snapshots
+              show_name: false
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+              tap_action:
+                action: toggle
+                haptic: medium
+            - type: custom:button-card
+              custom_fields:
+                icon: >
+                  <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 2048 2048"><path fill="currentColor" d="M1536 1408h128v640H256V640h640v128H384v1152h1152v-512zm128-768v640h-128V859l-595 594l-90-90l594-595h-421V640h640z"/></svg>
+              tap_action:
+                action: url
+                haptic: medium
+                url_path: frigate url
+              styles:
+                card:
+                  - height: 60px
+                  - width: 60px
+                grid:
+                  - grid-template-areas: |
+                      "icon"
+                  - grid-template-columns: auto
+                  - grid-template-rows: auto
+                  - align-items: center
+                  - will-change: transform
+                custom_fields:
+                  icon:
+                    - width: 40%
+                    - margin-left: 30%
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              template:
+                - menu_button3
+                - icon_access_base
+              tap_action:
+                haptic: success
+                action: call-service
+                service: mqtt.publish
+                service_data:
+                  topic: mqtt topic
+                  payload: mqtt payload
+                target: {}
+            - type: custom:button-card
+              template:
+                - menu_button3
+                - icon_access_elev_unlock
+              tap_action:
+                haptic: success
+                action: call-service
+                service: mqtt.publish
+                service_data:
+                  topic: mqtt topic
+                  payload: mqtt payload
+                target: {}
+            - type: custom:button-card
+              template:
+                - menu_button3
+                - icon_access_elev_up
+              tap_action:
+                haptic: success
+                action: call-service
+                service: mqtt.publish
+                service_data:
+                  topic: mqtt topic
+                  payload: mqtt payload
+                target: {}
+            - type: custom:button-card
+              template:
+                - menu_button3
+                - icon_access_elev_down
+              tap_action:
+                haptic: success
+                action: call-service
+                service: mqtt.publish
+                service_data:
+                  topic: mqtt topic
+                  payload: mqtt payload
+                target: {}

@@ -1,0 +1,97 @@
+climate2:
+  show_state: false
+  show_icon: true
+  template:
+    - base_2
+    - sound_climate
+    - additional_values
+  state:
+    - value: "problem"
+      styles:
+        card: [box-shadow: "0px 0px 10px 2px #FFCCCC"]
+    - value: "ok"
+      styles:
+        card: [box-shadow: "0px 0px 10px 2px #E5FFCC"]
+  variables:
+    value_1: >
+      [[[ return entity === undefined || Math.round((Math.abs(entity.attributes.pressure) > 999 ? Math.sign(entity.attributes.pressure)*((Math.abs(entity.attributes.pressure)/1000).toFixed(1)) + 'k' : Math.sign(entity.attributes.pressure)*Math.abs(entity.attributes.pressure))) + ' hPa'; ]]]
+    value_2: >
+      [[[ return entity === undefined || Math.round(entity.attributes.humidity) + '%'; ]]]
+
+climate:
+  custom_fields:
+    circle: >
+      [[[
+        const input = variables.circle_input == null ? ' ' : `${parseInt(variables.circle_input)}<tspan font-size="10">°C</tspan>`;
+        const stroke_color = variables.state === 'cool' || variables.state === 'fan_only' || variables.state === 'dry' || variables.state === 'heat' ? '#b2b2b2' : 'none';
+        const fill_color = variables.state === 'off' ? 'rgba(255,255,255,0.04)' : 'none';
+        return `
+          <svg viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+            <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}</text>
+          </svg>
+        `;
+      ]]]
+  styles:
+    custom_fields:
+      circle:
+        - display: initial
+        - width: 90%
+        - letter-spacing: 0.03vw
+        - margin: -6% -6% 0 0
+        - justify-self: end
+        - opacity: 1
+      icon:
+        - width: 100%
+        - fill: >
+            [[[
+              if (entity) {
+                if (entity.state == 'cool') {return "#87CEEB"}
+                if (entity.state == 'fan_only') {return "#00CCCC"}
+                if (entity.state == 'heat') {return "#FF4500"}
+                if (entity.state == 'dry') {return "#FFA500"}
+                return "#9da0a2"
+              }
+            ]]]
+
+climate3:
+  template:
+    - sound_popup_only
+  double_tap_action:
+    action: block
+  variables:
+    circle_input: >
+      [[[
+        if (entity) {
+          if (entity.state == 'cool') {return entity.attributes.temperature}
+          if (entity.state == 'fan_only') {return entity.attributes.current_temperature}
+          if (entity.state == 'heat') {return entity.attributes.temperature}
+          if (entity.state == 'dry') {return entity.attributes.current_temperature}
+          return entity.attributes.current_temperature
+        }
+      ]]]
+  custom_fields:
+    circle: >
+      [[[
+        const input = variables.circle_input == null ? ' ' : `${parseInt(variables.circle_input)}<tspan font-size="10">°C</tspan>`;
+        const stroke_color = variables.state === 'cool' || variables.state === 'fan_only' || variables.state === 'dry' || variables.state === 'heat' ? '#b2b2b2' : 'none';
+        const fill_color = variables.state === 'off' ? 'rgba(255,255,255,0.04)' : 'none';
+        return `
+          <svg viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+            <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}</text>
+          </svg>
+        `;
+      ]]]
+  styles:
+    custom_fields:
+      name:
+        - justify-self: start
+        - line-height: 121%
+      circle:
+        - display: initial
+        - width: 90%
+        - letter-spacing: 0.03vw
+        - margin: -6% -6% 0 0
+        - justify-self: end
+        - opacity: 1

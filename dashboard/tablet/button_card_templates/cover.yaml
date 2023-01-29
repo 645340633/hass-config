@@ -1,0 +1,229 @@
+cover:
+  template:
+    - base
+    - circle
+    - loader
+  hold_action:
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        title: >
+          [[[
+            return !entity || entity.attributes.friendly_name;
+          ]]]
+        card_mod:
+          style:
+            #popup header
+            .:
+        content:
+          type: entities
+          card_mod:
+            style: |
+              #states {
+                padding-top: 0.5em;
+              }
+          entities: >
+            [[[
+              if (entity) {
+                  let covers = [],
+                      id = Boolean(entity.attributes.entity_id)
+                          ? [entity.entity_id].concat(entity.attributes.entity_id)
+                          : [entity.entity_id];
+
+                  for (let i = 0; i < id.length; i++) {
+                      covers.push({
+                          "type": "custom:mushroom-cover-card",
+                          "entity": id[i],
+                          "show_position_control": true,
+                          "show_tilt_position_control": false,
+                          "show_buttons_control": false
+                      });
+                  }
+                  return covers;
+              }
+            ]]]
+  variables:
+    circle_input: >
+      [[[
+        if (entity) {
+          return entity.state == 'open' ?
+            entity.attributes.current_position :
+            entity.attributes.current_position;
+        }
+      ]]]
+    circle_input_unit: "%"
+
+cover2:
+  template:
+    - base
+    - circle
+    - sound_cover
+  hold_action:
+    card_bounce: |
+      [[[
+        // add animation
+        if (this.getElementsByTagName("style").length === 0) {
+
+            // phone condition
+            let mq = window.matchMedia('(max-width: 800px)').matches;
+
+            let style = document.createElement('style');
+
+            style.innerHTML = `
+                @keyframes card_bounce {
+                    0%   { transform: scale(1); }
+                    10%  { transform: scale(${ mq ? '0.92' : '0.94' }); }
+                    25%  { transform: scale(1); }
+                    30%  { transform: scale(${ mq ? '0.96' : '0.98' }); }
+                    100% { transform: scale(1); }
+                }
+            `;
+
+            this.appendChild(style);
+        }
+
+        // duration
+        let duration = 800;
+
+        // animate
+        this.style.animation = `card_bounce ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+
+        // reset
+        window.setTimeout(() => { this.style.animation = "none"; }, duration + 100)
+      ]]]
+    loader: >
+      [[[
+        if (entity) {
+            let elt = this.shadowRoot,
+                loader = (id, style, timeout) => {
+                  elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                    window.setTimeout(() => {
+                      elt.getElementById('loader').style.display = 'none'
+                    }, 20000))
+                };
+            loader('circle', 'none', 'initial'),
+            loader('loader', 'initial', 'none');
+        }
+      ]]]
+    action: toggle
+    haptic: success
+  double_tap_action:
+    card_bounce: |
+      [[[
+        // add animation
+        if (this.getElementsByTagName("style").length === 0) {
+
+            // phone condition
+            let mq = window.matchMedia('(max-width: 800px)').matches;
+
+            let style = document.createElement('style');
+
+            style.innerHTML = `
+                @keyframes card_bounce {
+                    0%   { transform: scale(1); }
+                    10%  { transform: scale(${ mq ? '0.92' : '0.94' }); }
+                    25%  { transform: scale(1); }
+                    30%  { transform: scale(${ mq ? '0.96' : '0.98' }); }
+                    100% { transform: scale(1); }
+                }
+            `;
+
+            this.appendChild(style);
+        }
+
+        // duration
+        let duration = 800;
+
+        // animate
+        this.style.animation = `card_bounce ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+
+        // reset
+        window.setTimeout(() => { this.style.animation = "none"; }, duration + 100)
+      ]]]
+    loader: >
+      [[[
+        if (entity) {
+            let elt = this.shadowRoot,
+                loader = (id, style, timeout) => {
+                  elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                    window.setTimeout(() => {
+                      elt.getElementById('loader').style.display = 'none'
+                    }, 20000))
+                };
+            loader('circle', 'none', 'initial'),
+            loader('loader', 'initial', 'none');
+        }
+      ]]]
+    action: toggle
+    haptic: success
+  custom_fields:
+    loader: >
+      <img src="/local/mattias/loader.svg" width="100%">
+  styles:
+    custom_fields:
+      loader:
+        - display: none
+        - top: -6%
+        - right: -3.5%
+        - width: 52%
+        - position: absolute
+        - opacity: 0.5
+        - pointer-events: none
+        - filter: >
+            [[[
+              return variables.state_on
+                  ? 'none'
+                  : 'invert(1)';
+            ]]]
+  tap_action:
+    action: fire-dom-event
+    haptic: medium
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        title: >
+          [[[
+            return !entity || entity.attributes.friendly_name;
+          ]]]
+        card_mod:
+          style:
+            #popup header
+            .:
+        content:
+          type: entities
+          card_mod:
+            style: |
+              #states {
+                padding-top: 0.5em;
+              }
+          entities: >
+            [[[
+              if (entity) {
+                  let covers = [],
+                      id = Boolean(entity.attributes.entity_id)
+                          ? [entity.entity_id].concat(entity.attributes.entity_id)
+                          : [entity.entity_id];
+
+                  for (let i = 0; i < id.length; i++) {
+                      covers.push({
+                          "type": "custom:mushroom-cover-card",
+                          "entity": id[i],
+                          "show_position_control": true,
+                          "show_tilt_position_control": false,
+                          "show_buttons_control": false
+                      });
+                  }
+                  return covers;
+              }
+            ]]]
+  variables:
+    circle_input: >
+      [[[
+        if (entity) {
+          return entity.state == 'open' ?
+            entity.attributes.current_position :
+            entity.attributes.current_position;
+        }
+      ]]]
+    circle_input_unit: "%"

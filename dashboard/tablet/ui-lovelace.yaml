@@ -1,0 +1,1856 @@
+button_card_templates: !include_dir_merge_named button_card_templates
+kiosk_mode:
+  hide_header: true
+views:
+  #################################################
+  #                                               #
+  #                   OVERVIEW                    #
+  #                                               #
+  #################################################
+  - theme: tablet
+    type: custom:grid-layout
+    title: OVERVIEW
+    path: overview
+    layout:
+      #default
+      margin: 0
+      grid-gap: var(--custom-layout-card-padding)
+      # grid-template-columns: repeat(3, 1fr)  0
+      grid-template-columns: repeat(4, 1fr)  0
+      grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr repeat(1, fit-content(100%))
+      grid-template-areas: |
+        "sidebar  .             .              .      ."
+        "sidebar  environment   devices        acs    ."
+        "sidebar  .             .              .      ."
+        "sidebar  lights-area1  lights-area2   media  ."
+
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(4, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .              .             ."
+            ".  sidebar        sidebar       ."
+            ".  environment    devices       ."
+            ".  lights-area1   lights-area2  ."
+            ".  acs            media         ."
+            ".  .              .             ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%))
+          grid-template-areas: |
+            "sidebar  .              .             ."
+            "sidebar  environment    devices       ."
+            "sidebar  lights-area1   lights-area2  ."
+            "sidebar  acs            media         ."
+    cards:
+      #extra_styles fix, do not remove
+      #also warn if theme is not set
+
+      - type: custom:button-card
+        view_layout:
+          grid-area: 1 / 2 / 2 / 5
+        name: SET THEME TO "tablet" IN PROFILE
+        tap_action:
+          action: navigate
+          navigation_path: /profile
+        styles:
+          card:
+            - display: >
+                [[[
+                  return hass.themes.theme === 'tablet'
+                      ? 'none'
+                      : 'initial';
+                ]]]
+          name:
+            - z-index: 1
+            - overflow: visible
+            - color: red
+            - font-weight: bolder
+            - font-size: xxx-large
+            - background: yellow
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.wo_de_jia_2
+          - type: grid
+            cards:
+              - type: custom:button-card
+                entity: weather.wo_de_jia_2
+                template:
+                  - colorfulclous
+                tap_action: !include popup/colorfulclous.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_access
+                tap_action: !include popup/access.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_home
+
+      #################################################
+      #                                               #
+      #                  ENVIRONMENT                  #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 环境
+        view_layout:
+          grid-area: environment
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: sensor.a4c138d7f119_temperature
+            name: 室内温度
+            template:
+              - base
+              - icon_temperature
+              - sound_popup_only
+            variables:
+              color: "#385581"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.a4c138d7f119_humidity
+            name: 室内湿度
+            template:
+              - base
+              - icon_humidity
+              - sound_popup_only
+            variables:
+              color: "#1cbacd"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.yang_tai_wen_shi_du_chuan_gan_qi_temperature
+            name: 室外温度
+            template:
+              - base
+              - icon_temperature
+              - sound_popup_only
+            variables:
+              color: "#385581"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.yang_tai_wen_shi_du_chuan_gan_qi_humidity
+            name: 室外湿度
+            template:
+              - base
+              - icon_humidity
+              - sound_popup_only
+            variables:
+              color: "#1cbacd"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+
+      #################################################
+      #                                               #
+      #                    DEVICES                    #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 设备
+        view_layout:
+          grid-area: devices
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: vacuum.deebot_313a6802_595d_4e22_844a_07dc88c34af4
+            name: 扫地机器人
+            template:
+              - vacuum
+          - type: custom:button-card
+            entity: cover.chu_fang_chuang_lian
+            name: 厨房窗帘
+            template:
+              - cover2
+              - icon_cover
+              - sound_cover
+          - type: custom:button-card
+            entity: sensor.deacon_nvme0_health
+            name: 服务器
+            template:
+              - server
+          - type: custom:button-card
+            entity: switch.d1bf4138aafb_battery
+            name: 电池
+            template:
+              - batteries
+
+      #################################################
+      #                                               #
+      #                AIR CONTIDIONERS               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 空调
+        view_layout:
+          grid-area: acs
+        columns: 1
+        square: false
+        cards:
+          - type: custom:swipe-card
+            start_card: 1
+            parameters:
+              roundLengths: true
+              effect: coverflow
+              speed: 650
+              spaceBetween: 20
+              threshold: 7
+              coverflowEffect:
+                rotate: 80
+                depth: 300
+            cards:
+              - type: grid
+                columns: 2
+                cards:
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_2
+                    name: 餐厅
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_kitchen.yaml
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_5
+                    name: 客厅
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_livingroom.yaml
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_4
+                    name: 主卧
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_master.yaml
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_3
+                    name: 次卧
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_guest.yaml
+              - type: grid
+                columns: 2
+                cards:
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_1
+                    name: 仓库
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_storage.yaml
+                  - type: custom:button-card
+                    entity: climate.zhonghong_ac_0
+                    name: 儿童房
+                    template:
+                      - base
+                      - climate3
+                      - icon_climate3
+                    tap_action: !include popup/climate_kids.yaml
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 公区
+        view_layout:
+          grid-area: lights-area1
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_right
+            name: 餐厅
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/lights
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671280618823
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671280618823
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.can_ting_lang_dao_kai_guan_right
+              - switch.can_ting_lang_dao_kai_guan_left
+              - switch.can_ting_chu_fang_kai_guan_right
+              - switch.can_ting_chu_fang_kai_guan_left
+            state_display: >-
+              [[[
+                let switches = ['switch.can_ting_lang_dao_kai_guan_right', 'switch.can_ting_lang_dao_kai_guan_left', 'switch.can_ting_chu_fang_kai_guan_right', 'switch.can_ting_chu_fang_kai_guan_left'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.can_ting_lang_dao_kai_guan_right', 'switch.can_ting_lang_dao_kai_guan_left', 'switch.can_ting_chu_fang_kai_guan_right', 'switch.can_ting_chu_fang_kai_guan_left'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "climate.zhonghong_ac_2"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7m5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7m5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4Z"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_right
+            name: 客厅
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/lights
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671283153174
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671283153174
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.ke_ting_deng_dai_kai_guan_left
+              - switch.ke_ting_xi_ding_deng_kai_guan_right
+              - switch.ke_ting_deng_dai_kai_guan_right
+              - switch.ke_ting_xi_ding_deng_kai_guan_left
+              - switch.yang_tai_yang_tai_kai_guan_right
+              - switch.yang_tai_yang_tai_kai_guan_left
+            state_display: >-
+              [[[
+                let switches = ['switch.ke_ting_deng_dai_kai_guan_left', 'switch.ke_ting_xi_ding_deng_kai_guan_right', 'switch.ke_ting_deng_dai_kai_guan_right', 'switch.ke_ting_xi_ding_deng_kai_guan_left', 'switch.yang_tai_yang_tai_kai_guan_right', 'switch.yang_tai_yang_tai_kai_guan_left'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.ke_ting_deng_dai_kai_guan_left', 'switch.ke_ting_xi_ding_deng_kai_guan_right', 'switch.ke_ting_deng_dai_kai_guan_right', 'switch.ke_ting_xi_ding_deng_kai_guan_left', 'switch.yang_tai_yang_tai_kai_guan_right', 'switch.yang_tai_yang_tai_kai_guan_left'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "climate.zhonghong_ac_5"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M12.5 7c0-1.11.89-2 2-2H18c1.1 0 2 .9 2 2v2.16c-1.16.41-2 1.51-2 2.81V14h-5.5V7M6 11.96V14h5.5V7c0-1.11-.89-2-2-2H6c-1.1 0-2 .9-2 2v2.15c1.16.41 2 1.52 2 2.81m14.66-1.93c-.98.16-1.66 1.09-1.66 2.09V15H5v-3a2 2 0 1 0-4 0v5c0 1.1.9 2 2 2v2h2v-2h14v2h2v-2c1.1 0 2-.9 2-2v-5c0-1.21-1.09-2.18-2.34-1.97Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M12.5 7c0-1.11.89-2 2-2H18c1.1 0 2 .9 2 2v2.16c-1.16.41-2 1.51-2 2.81V14h-5.5V7M6 11.96V14h5.5V7c0-1.11-.89-2-2-2H6c-1.1 0-2 .9-2 2v2.15c1.16.41 2 1.52 2 2.81m14.66-1.93c-.98.16-1.66 1.09-1.66 2.09V15H5v-3a2 2 0 1 0-4 0v5c0 1.1.9 2 2 2v2h2v-2h14v2h2v-2c1.1 0 2-.9 2-2v-5c0-1.21-1.09-2.18-2.34-1.97Z"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_right
+            name: 玄关
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/lights
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671283669932
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671283669932
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.xuan_guan_men_kou_kai_guan_right
+              - switch.xuan_guan_men_kou_kai_guan_left
+              - light.led_strip
+            state_display: >-
+              [[[
+                let switches = ['switch.xuan_guan_men_kou_kai_guan_right', 'switch.xuan_guan_men_kou_kai_guan_left', 'light.led_strip'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state: "on"
+              state_on: >-
+                [[[
+                  let switches = ['switch.xuan_guan_men_kou_kai_guan_right', 'switch.xuan_guan_men_kou_kai_guan_left', 'light.led_strip'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "sensor.a4c138d7f119_temperature"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M6 22q-.825 0-1.412-.587Q4 20.825 4 20V4q0-.825.588-1.413Q5.175 2 6 2h12q.825 0 1.413.587Q20 3.175 20 4v16q0 .825-.587 1.413Q18.825 22 18 22Zm9.5-8.5q.625 0 1.062-.438Q17 12.625 17 12t-.438-1.062q-.437-.438-1.062-.438t-1.062.438Q14 11.375 14 12t.438 1.062q.437.438 1.062.438Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M6 22q-.825 0-1.412-.587Q4 20.825 4 20V4q0-.825.588-1.413Q5.175 2 6 2h12q.825 0 1.413.587Q20 3.175 20 4v16q0 .825-.587 1.413Q18.825 22 18 22Zm9.5-8.5q.625 0 1.062-.438Q17 12.625 17 12t-.438-1.062q-.437-.438-1.062-.438t-1.062.438Q14 11.375 14 12t.438 1.062q.437.438 1.062.438Z"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_right
+            name: 厕所
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/lights
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671284334271
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671284334271
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.ce_suo_ce_suo_kai_guan_left
+              - switch.ce_suo_ce_suo_kai_guan_right
+              - switch.ce_suo_xi_shu_tai_kai_guan_right
+              - switch.ce_suo_xi_shu_tai_kai_guan_left
+            state_display: >-
+              [[[
+                let switches = ['switch.ce_suo_ce_suo_kai_guan_left', 'switch.ce_suo_ce_suo_kai_guan_right', 'switch.ce_suo_xi_shu_tai_kai_guan_right', 'switch.ce_suo_xi_shu_tai_kai_guan_left'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.ce_suo_ce_suo_kai_guan_left', 'switch.ce_suo_ce_suo_kai_guan_right', 'switch.ce_suo_xi_shu_tai_kai_guan_right', 'switch.ce_suo_xi_shu_tai_kai_guan_left'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "sensor.a4c138d7f119_temperature"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M21 14v1c0 1.91-1.07 3.57-2.65 4.41L19 22h-2l-.5-2h-9L7 22H5l.65-2.59A4.987 4.987 0 0 1 3 15v-1H2v-2h18V5a1 1 0 0 0-1-1c-.5 0-.88.34-1 .79c.63.54 1 1.34 1 2.21h-6a3 3 0 0 1 3-3h.17c.41-1.16 1.52-2 2.83-2a3 3 0 0 1 3 3v9h-1m-2 0H5v1a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-1Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#8d8e90" d="M21 14v1c0 1.91-1.07 3.57-2.65 4.41L19 22h-2l-.5-2h-9L7 22H5l.65-2.59A4.987 4.987 0 0 1 3 15v-1H2v-2h18V5a1 1 0 0 0-1-1c-.5 0-.88.34-1 .79c.63.54 1 1.34 1 2.21h-6a3 3 0 0 1 3-3h.17c.41-1.16 1.52-2 2.83-2a3 3 0 0 1 3 3v9h-1m-2 0H5v1a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-1Z"/>
+                    </svg>`;
+                ]]]
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA2               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: "房间"
+        view_layout:
+          grid-area: lights-area2
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.zhu_wo_men_kou_kai_guan_right
+            name: 主卧
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/master
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671281367211
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671281367211
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.zhu_wo_men_kou_kai_guan_right
+              - switch.zhu_wo_chuang_bian_kai_guan_zuo_center
+              - light.yeelink_lamp22_136b_light
+              - light.light
+              - switch.zhu_wo_men_kou_kai_guan_left
+              - switch.zhu_wo_yi_mao_jian_kai_guan
+              - switch.zhu_wo_chuang_bian_kai_guan_zuo_left
+              - switch.zhu_wo_chuang_bian_kai_guan_you_right
+              - switch.zhu_wo_ce_suo_kai_guan_right
+              - switch.zhu_wo_ce_suo_kai_guan_left
+            state_display: >-
+              [[[
+                let switches = ['switch.zhu_wo_men_kou_kai_guan_right', 'switch.zhu_wo_chuang_bian_kai_guan_zuo_center', 'light.yeelink_lamp22_136b_light', 'light.light', 'switch.zhu_wo_men_kou_kai_guan_left', 'switch.zhu_wo_yi_mao_jian_kai_guan', 'switch.zhu_wo_chuang_bian_kai_guan_zuo_left', 'switch.zhu_wo_chuang_bian_kai_guan_you_right', 'switch.zhu_wo_ce_suo_kai_guan_right', 'switch.zhu_wo_ce_suo_kai_guan_left'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.zhu_wo_men_kou_kai_guan_right', 'switch.zhu_wo_chuang_bian_kai_guan_zuo_center', 'light.yeelink_lamp22_136b_light', 'light.light', 'switch.zhu_wo_men_kou_kai_guan_left', 'switch.zhu_wo_yi_mao_jian_kai_guan', 'switch.zhu_wo_chuang_bian_kai_guan_zuo_left', 'switch.zhu_wo_chuang_bian_kai_guan_you_right', 'switch.zhu_wo_ce_suo_kai_guan_right', 'switch.zhu_wo_ce_suo_kai_guan_left'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "sensor.temperature"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35Z"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.ci_wo_chuang_tou_kai_guan_you_left
+            name: 次卧
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/guest
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671281868396
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671281868396
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.ci_wo_chuang_tou_kai_guan_you_left
+              - switch.ci_wo_men_kou_kai_guan_left
+              - switch.ci_wo_chuang_tou_kai_guan_zuo
+              - switch.ci_wo_chuang_tou_kai_guan_you_right
+            state_display: >-
+              [[[
+                let switches = ['switch.ci_wo_chuang_tou_kai_guan_you_left', 'switch.ci_wo_men_kou_kai_guan_left', 'switch.ci_wo_chuang_tou_kai_guan_zuo', 'switch.ci_wo_chuang_tou_kai_guan_you_right'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.ci_wo_chuang_tou_kai_guan_you_left', 'switch.ci_wo_men_kou_kai_guan_left', 'switch.ci_wo_chuang_tou_kai_guan_zuo', 'switch.ci_wo_chuang_tou_kai_guan_you_right'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "sensor.48574301cfad_temperature"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M19 7h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4M7 13a3 3 0 0 0 3-3a3 3 0 0 0-3-3a3 3 0 0 0-3 3a3 3 0 0 0 3 3Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M19 7h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4M7 13a3 3 0 0 0 3-3a3 3 0 0 0-3-3a3 3 0 0 0-3 3a3 3 0 0 0 3 3Z"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.er_tong_fang_chuang_bian_kai_guan_left
+            name: 儿童房
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/kids
+            hold_action:
+              haptic: success
+              action: call-service
+              service: script.1671280485045
+              data: {}
+              target: {}
+            double_tap_action:
+              haptic: success
+              action: call-service
+              service: script.1671280485045
+              data: {}
+              target: {}
+            triggers_update:
+              - switch.er_tong_fang_chuang_bian_kai_guan_left
+              - switch.er_tong_fang_chuang_bian_kai_guan_right
+            state_display: >-
+              [[[
+                let switches = ['switch.er_tong_fang_chuang_bian_kai_guan_left', 'switch.er_tong_fang_chuang_bian_kai_guan_right'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.er_tong_fang_chuang_bian_kai_guan_left', 'switch.er_tong_fang_chuang_bian_kai_guan_right'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "climate.zhonghong_ac_0"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M15.75 19.13c-.83 0-1.5-.84-1.5-1.88c0-1.03.67-1.87 1.5-1.87s1.5.84 1.5 1.87c0 1.04-.67 1.88-1.5 1.88M12 11.25c-1.24 0-2.25-.84-2.25-1.87c0-1.04 1.01-1.88 2.25-1.88s2.25.84 2.25 1.88c0 1.03-1.01 1.87-2.25 1.87m-3.75 7.88c-.83 0-1.5-.84-1.5-1.88c0-1.03.67-1.87 1.5-1.87s1.5.84 1.5 1.87c0 1.04-.67 1.88-1.5 1.88M12 8.25c.41 0 .75.34.75.75s-.34.75-.75.75s-.75-.34-.75-.75s.34-.75.75-.75M18.75 12c-.32 0-.63.07-.91.2c-.48-.61-1.13-1.13-1.91-1.53c.57-.8.91-1.77.91-2.82v-.06c1.09-.23 1.91-1.2 1.91-2.37c0-1.33-1.09-2.42-2.42-2.42c-.69 0-1.33.29-1.75.75a4.813 4.813 0 0 0-5.16 0C9 3.29 8.36 3 7.67 3C6.34 3 5.25 4.09 5.25 5.42c0 1.16.82 2.13 1.9 2.37v.06c0 1.05.35 2.03.91 2.82c-.77.4-1.42.92-1.9 1.53A2.24 2.24 0 0 0 3 14.25c0 1.25 1 2.25 2.25 2.25h.06c-.04.24-.06.5-.06.75c0 2.07 1.34 3.75 3 3.75c1.01 0 1.9-.63 2.45-1.59c.42.06.85.09 1.3.09c.45 0 .88-.03 1.3-.09c.55.96 1.44 1.59 2.45 1.59c1.66 0 3-1.68 3-3.75c0-.25-.02-.51-.06-.75h.06c1.25 0 2.25-1 2.25-2.25S20 12 18.75 12"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M15.75 19.13c-.83 0-1.5-.84-1.5-1.88c0-1.03.67-1.87 1.5-1.87s1.5.84 1.5 1.87c0 1.04-.67 1.88-1.5 1.88M12 11.25c-1.24 0-2.25-.84-2.25-1.87c0-1.04 1.01-1.88 2.25-1.88s2.25.84 2.25 1.88c0 1.03-1.01 1.87-2.25 1.87m-3.75 7.88c-.83 0-1.5-.84-1.5-1.88c0-1.03.67-1.87 1.5-1.87s1.5.84 1.5 1.87c0 1.04-.67 1.88-1.5 1.88M12 8.25c.41 0 .75.34.75.75s-.34.75-.75.75s-.75-.34-.75-.75s.34-.75.75-.75M18.75 12c-.32 0-.63.07-.91.2c-.48-.61-1.13-1.13-1.91-1.53c.57-.8.91-1.77.91-2.82v-.06c1.09-.23 1.91-1.2 1.91-2.37c0-1.33-1.09-2.42-2.42-2.42c-.69 0-1.33.29-1.75.75a4.813 4.813 0 0 0-5.16 0C9 3.29 8.36 3 7.67 3C6.34 3 5.25 4.09 5.25 5.42c0 1.16.82 2.13 1.9 2.37v.06c0 1.05.35 2.03.91 2.82c-.77.4-1.42.92-1.9 1.53A2.24 2.24 0 0 0 3 14.25c0 1.25 1 2.25 2.25 2.25h.06c-.04.24-.06.5-.06.75c0 2.07 1.34 3.75 3 3.75c1.01 0 1.9-.63 2.45-1.59c.42.06.85.09 1.3.09c.45 0 .88-.03 1.3-.09c.55.96 1.44 1.59 2.45 1.59c1.66 0 3-1.68 3-3.75c0-.25-.02-.51-.06-.75h.06c1.25 0 2.25-1 2.25-2.25S20 12 18.75 12"/>
+                    </svg>`;
+                ]]]
+          - type: custom:button-card
+            entity: switch.cang_ku_men_kou_kai_guan
+            name: 仓库
+            template:
+              - area
+            tap_action:
+              action: navigate
+              navigation_path: /mattias-lovelace/lights
+            hold_action:
+              haptic: success
+              action: toggle
+            double_tap_action:
+              haptic: success
+              action: toggle
+            triggers_update:
+              - switch.cang_ku_men_kou_kai_guan
+              - light.rgb_light_1
+              - light.rgb_light_2_2
+            state_display: >-
+              [[[
+                let switches = ['switch.cang_ku_men_kou_kai_guan', 'light.rgb_light_1', 'light.rgb_light_2_2'];
+                let count = 0;
+                for (var i=0,len=switches.length; i<len; i++) {
+                  if (states[switches[i]].state == 'on') {
+                    count = count + 1;
+                  }
+                }
+                if (count == 0) {
+                  return "关";
+                }
+                return count + "盏开着";
+              ]]]
+            variables:
+              state_on: >-
+                [[[
+                  let switches = ['switch.cang_ku_men_kou_kai_guan', 'light.rgb_light_1', 'light.rgb_light_2_2'];
+                  let count = 0;
+                  for (var i=0,len=switches.length; i<len; i++) {
+                    if (states[switches[i]].state == 'on') {
+                      return true;
+                    }
+                  }
+                  return false;
+                ]]]
+              sensor: "climate.zhonghong_ac_1"
+            custom_fields:
+              icon: >
+                [[[
+                  if (variables.state_on) {
+                    return `<svg viewBox="0 0 24 24">
+                        <path fill="#FFA500" d="M18 16h-2v-1H8v1H6v-1H2v5h20v-5h-4v1m2-8h-3V6c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v4h4v-2h2v2h8v-2h2v2h4v-4c0-1.1-.9-2-2-2m-5 0H9V6h6v2Z"/>
+                      </svg>`;
+                  }
+                  return `<svg viewBox="0 0 24 24">
+                      <path fill="#9da0a2" d="M18 16h-2v-1H8v1H6v-1H2v5h20v-5h-4v1m2-8h-3V6c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v4h4v-2h2v2h8v-2h2v2h4v-4c0-1.1-.9-2-2-2m-5 0H9V6h6v2Z"/>
+                    </svg>`;
+                ]]]
+
+      #################################################
+      #                                               #
+      #                     MEDIA                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 监控
+        view_layout:
+          grid-area: media
+        columns: 1
+        square: false
+        cards:
+          - type: custom:swipe-card
+            start_card: 1
+            parameters:
+              roundLengths: true
+              effect: coverflow
+              speed: 650
+              spaceBetween: 20
+              threshold: 7
+              coverflowEffect:
+                rotate: 80
+                depth: 300
+            cards:
+              - type: custom:button-card
+                entity: camera.front_door
+                name: 电梯
+                template:
+                  - frigate_camera
+                tap_action: !include popup/camera_front_door.yaml
+              - type: custom:button-card
+                entity: camera.living_room
+                name: 客厅
+                template:
+                  - frigate_camera
+                tap_action: !include popup/camera_living_room.yaml
+              - type: custom:button-card
+                entity: camera.storage_room
+                name: 仓库
+                template:
+                  - frigate_camera
+                tap_action: !include popup/camera_storage_room.yaml
+
+  #################################################
+  #                                               #
+  #                    LIGHTS                     #
+  #                                               #
+  #################################################
+  - theme: tablet
+    type: custom:grid-layout
+    title: Home
+    path: lights
+    layout:
+      #default
+      margin: 0
+      grid-gap: var(--custom-layout-card-padding)
+      grid-template-columns: repeat(4, 1fr)  0
+      grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr repeat(1, fit-content(100%))
+      grid-template-areas: |
+        "sidebar  .       .           .            ."
+        "sidebar  gate    kitchen      livingroom  ."
+        "sidebar  .       .           .            ."
+        "sidebar  toliet  storageroom  others      ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(4, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .           .            ."
+            ".  sidebar      sidebar     ."
+            ".  kitchen      livingroom  ."
+            ".  gate         toliet      ."
+            ".  storageroom  others      ."
+            ".  .            .           ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%))
+          grid-template-areas: |
+            "sidebar  .            .           ."
+            "sidebar  kitchen      livingroom  ."
+            "sidebar  gate         toliet      ."
+            "sidebar  storageroom  others      ."
+    cards:
+      - type: custom:button-card
+        view_layout:
+          grid-area: 1 / 2 / 2 / 5
+        name: SET THEME TO "tablet" IN PROFILE
+        tap_action:
+          action: navigate
+          navigation_path: /profile
+        styles:
+          card:
+            - display: >
+                [[[
+                  return hass.themes.theme === 'tablet'
+                      ? 'none'
+                      : 'initial';
+                ]]]
+          name:
+            - z-index: 1
+            - overflow: visible
+            - color: red
+            - font-weight: bolder
+            - font-size: xxx-large
+            - background: yellow
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.wo_de_jia_2
+          - type: grid
+            cards:
+              - type: custom:button-card
+                entity: weather.wo_de_jia_2
+                template:
+                  - colorfulclous
+                tap_action: !include popup/colorfulclous.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_access
+                tap_action: !include popup/access.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_back
+                tap_action:
+                  haptic: medium
+                  action: navigate
+                  navigation_path: /mattias-lovelace/overview
+                hold_action:
+                  action: none
+
+      #################################################
+      #                                               #
+      #                   KITCHEN                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 餐厅
+        view_layout:
+          grid-area: kitchen
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.can_ting_lang_dao_kai_guan_right
+            name: 灯带
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.can_ting_lang_dao_kai_guan_left
+            name: 吸顶灯
+            template:
+              - switch
+              - icon_ceiling_light
+          - type: custom:button-card
+            entity: switch.can_ting_chu_fang_kai_guan_right
+            name: 厨房
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.can_ting_chu_fang_kai_guan_left
+            name: 洗手池
+            template:
+              - switch
+              - icon_spot
+
+      #################################################
+      #                                               #
+      #                  LIVINGROOM                   #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 客厅
+        view_layout:
+          grid-area: livingroom
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.ke_ting_deng_dai_kai_guan_left
+            name: 灯带
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.ke_ting_xi_ding_deng_kai_guan_right
+            name: 吸顶灯
+            template:
+              - switch
+              - icon_ceiling_light
+          - type: custom:button-card
+            entity: switch.ke_ting_deng_dai_kai_guan_right
+            name: 沙发
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ke_ting_xi_ding_deng_kai_guan_left
+            name: 电视
+            template:
+              - switch
+              - icon_spot
+
+      #################################################
+      #                                               #
+      #                     GATE                      #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 玄关
+        view_layout:
+          grid-area: gate
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_right
+            name: 灯带
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.xuan_guan_men_kou_kai_guan_left
+            name: 筒灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: light.led_strip
+            name: 穿衣镜
+            template:
+              - light_homekit
+              - icon_mirror
+
+      #################################################
+      #                                               #
+      #                    TOLIET                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 厕所
+        view_layout:
+          grid-area: toliet
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.ce_suo_xi_shu_tai_kai_guan_left
+            name: 廊道
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ce_suo_xi_shu_tai_kai_guan_right
+            name: 洗漱台
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ce_suo_ce_suo_kai_guan_right
+            name: 厕所
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ce_suo_ce_suo_kai_guan_left
+            name: 洗浴
+            template:
+              - switch
+              - icon_spot
+
+      #################################################
+      #                                               #
+      #                   STORAGE                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 仓库
+        view_layout:
+          grid-area: storageroom
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.cang_ku_men_kou_kai_guan
+            name: 仓库
+            template:
+              - switch
+              - icon_ceiling_light
+          - type: custom:button-card
+            entity: light.rgb_light_1
+            name: 流沙内
+            template:
+              - light_homekit
+              - icon_hue
+          - type: custom:button-card
+            entity: light.rgb_light_2_2
+            name: 流沙外
+            template:
+              - light_homekit
+              - icon_hue
+
+      #################################################
+      #                                               #
+      #                    OTHERS                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 阳台
+        view_layout:
+          grid-area: others
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.yang_tai_yang_tai_kai_guan_left
+            name: 阳台
+            template:
+              - switch
+              - icon_ceiling_light
+          - type: custom:button-card
+            entity: switch.yang_tai_yang_tai_kai_guan_right
+            name: 洗衣机
+            template:
+              - switch
+              - icon_ceiling_light
+
+  #################################################
+  #                                               #
+  #                    MASTER                     #
+  #                                               #
+  #################################################
+  - theme: tablet
+    type: custom:grid-layout
+    title: Master
+    path: master
+    layout:
+      margin: 0
+      grid-gap: var(--custom-layout-card-padding)
+      grid-template-columns: repeat(4, 1fr)  0
+      grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr repeat(1, fit-content(100%))
+      grid-template-areas: |
+        "sidebar  .             .              .              ."
+        "sidebar  environment   devices-area1  .              ."
+        "sidebar  .             .              .              ."
+        "sidebar  lights-area1  lights-area2   lights-area3   ."
+
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(4, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .              .              ."
+            ".  sidebar        sidebar        ."
+            ".  environment    devices-area1  ."
+            ".  lights-area1   lights-area2   ."
+            ".  lights-area3   .              ."
+            ".  .              .              ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(4, fit-content(100%))
+          grid-template-areas: |
+            "sidebar  .              .              ."
+            "sidebar  environment    .              ."
+            "sidebar  devices-area1  .              ."
+            "sidebar  lights-area1   lights-area2   ."
+            "sidebar  lights-area3   .              ."
+    cards:
+      - type: custom:button-card
+        view_layout:
+          grid-area: 1 / 2 / 2 / 5
+        name: SET THEME TO "tablet" IN PROFILE
+        tap_action:
+          action: navigate
+          navigation_path: /profile
+        styles:
+          card:
+            - display: >
+                [[[
+                  return hass.themes.theme === 'tablet'
+                      ? 'none'
+                      : 'initial';
+                ]]]
+          name:
+            - z-index: 1
+            - overflow: visible
+            - color: red
+            - font-weight: bolder
+            - font-size: xxx-large
+            - background: yellow
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.wo_de_jia_2
+          - type: grid
+            cards:
+              - type: custom:button-card
+                entity: weather.wo_de_jia_2
+                template:
+                  - colorfulclous
+                tap_action: !include popup/colorfulclous.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_access
+                tap_action: !include popup/access.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_back
+                tap_action:
+                  haptic: medium
+                  action: navigate
+                  navigation_path: /mattias-lovelace/overview
+                hold_action:
+                  action: none
+
+      #################################################
+      #                                               #
+      #                  ENVIRONMENT                  #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 环境
+        view_layout:
+          grid-area: environment
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: sensor.temperature
+            name: 温度
+            template:
+              - base
+              - icon_temperature
+              - sound_popup_only
+            variables:
+              color: "#385581"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.humidity
+            name: 湿度
+            template:
+              - base
+              - icon_humidity
+              - sound_popup_only
+            variables:
+              color: "#1cbacd"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.formaldehyde
+            name: 甲醛
+            template:
+              - base
+              - icon_formaldehyde
+              - sound_popup_only
+            variables:
+              color: "#cd7c1c"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.co2
+            name: 二氧化碳
+            template:
+              - base
+              - icon_co2
+              - sound_popup_only
+            variables:
+              color: "#cbbfb3"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+
+      #################################################
+      #                                               #
+      #                   DEVICES AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 设备
+        view_layout:
+          grid-area: devices-area1
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: cover.zhu_wo_chuang_lian
+            name: 窗帘
+            template:
+              - cover2
+              - icon_cover
+          - type: custom:button-card
+            entity: cover.zhu_wo_chuang_sha
+            name: 窗纱
+            template:
+              - cover2
+              - icon_cover
+          - type: custom:button-card
+            entity: climate.zhonghong_ac_4
+            name: 空调
+            template:
+              - base
+              - climate3
+              - icon_climate3
+            tap_action: !include popup/climate_master.yaml
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 常用
+        view_layout:
+          grid-area: lights-area1
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.zhu_wo_men_kou_kai_guan_right
+            name: 灯带
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.zhu_wo_chuang_bian_kai_guan_zuo_center
+            name: 筒灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: light.yeelink_lamp22_136b_light
+            name: 台灯
+            template:
+              - light
+              - icon_shade
+          - type: custom:button-card
+            entity: light.light
+            name: 小夜灯
+            template:
+              - switch
+              - icon_crystal_ball
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA2               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: "灯光"
+        view_layout:
+          grid-area: lights-area2
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.zhu_wo_men_kou_kai_guan_left
+            name: 廊灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.zhu_wo_yi_mao_jian_kai_guan
+            name: 衣帽间
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.zhu_wo_chuang_bian_kai_guan_zuo_left
+            name: 床头灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.zhu_wo_chuang_bian_kai_guan_you_right
+            name: 床头灯
+            template:
+              - switch
+              - icon_spot
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA3               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: " "
+        view_layout:
+          grid-area: lights-area3
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.zhu_wo_ce_suo_kai_guan_right
+            name: 洗漱台
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.zhu_wo_ce_suo_kai_guan_left
+            name: 厕所
+            template:
+              - switch
+              - icon_spot
+
+  #################################################
+  #                                               #
+  #                     GUEST                     #
+  #                                               #
+  #################################################
+  - theme: tablet
+    type: custom:grid-layout
+    title: Guest
+    path: guest
+    layout:
+      #default
+      margin: 0
+      grid-gap: var(--custom-layout-card-padding)
+      # grid-template-columns: repeat(3, 1fr)  0
+      grid-template-columns: repeat(4, 1fr)  0
+      grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr repeat(1, fit-content(100%))
+      grid-template-areas: |
+        "sidebar  .             .              .              ."
+        "sidebar  environment   devices-area1  .              ."
+        "sidebar  .             .              .              ."
+        "sidebar  lights-area1  .              .              ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .              .              ."
+            ".  sidebar        sidebar        ."
+            ".  environment    devices-area1  ."
+            ".  lights-area1   .              ."
+            ".  .              .              ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%))
+          grid-template-areas: |
+            "sidebar  .              .              ."
+            "sidebar  environment    .              ."
+            "sidebar  devices-area1  .              ."
+            "sidebar  lights-area1   .              ."
+    cards:
+      - type: custom:button-card
+        view_layout:
+          grid-area: 1 / 2 / 2 / 5
+        name: SET THEME TO "tablet" IN PROFILE
+        tap_action:
+          action: navigate
+          navigation_path: /profile
+        styles:
+          card:
+            - display: >
+                [[[
+                  return hass.themes.theme === 'tablet'
+                      ? 'none'
+                      : 'initial';
+                ]]]
+          name:
+            - z-index: 1
+            - overflow: visible
+            - color: red
+            - font-weight: bolder
+            - font-size: xxx-large
+            - background: yellow
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.wo_de_jia_2
+          - type: grid
+            cards:
+              - type: custom:button-card
+                entity: weather.wo_de_jia_2
+                template:
+                  - colorfulclous
+                tap_action: !include popup/colorfulclous.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_access
+                tap_action: !include popup/access.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_back
+                tap_action:
+                  haptic: medium
+                  action: navigate
+                  navigation_path: /mattias-lovelace/overview
+                hold_action:
+                  action: none
+
+      #################################################
+      #                                               #
+      #                  ENVIRONMENT                  #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 环境
+        view_layout:
+          grid-area: environment
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: sensor.48574301cfad_temperature
+            name: 温度
+            template:
+              - base
+              - icon_temperature
+              - sound_popup_only
+            variables:
+              color: "#385581"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+          - type: custom:button-card
+            entity: sensor.48574301cfad_humidity
+            name: 湿度
+            template:
+              - base
+              - icon_humidity
+              - sound_popup_only
+            variables:
+              color: "#1cbacd"
+            double_tap_action:
+              action: block
+            tap_action: !include popup/environment.yaml
+          - type: custom:button-card
+            entity: sensor.48574301cfad_formaldehyde
+            name: 甲醛
+            template:
+              - base
+              - icon_formaldehyde
+              - sound_popup_only
+            variables:
+              color: "#cd7c1c"
+            tap_action: !include popup/environment.yaml
+            double_tap_action:
+              action: block
+
+      #################################################
+      #                                               #
+      #                   DEVICES AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 设备
+        view_layout:
+          grid-area: devices-area1
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: climate.zhonghong_ac_3
+            name: 空调
+            # tap_action: !include popup/livingroom_climate.yaml
+            template:
+              - base
+              - climate3
+              - icon_climate3
+            tap_action: !include popup/climate_guest.yaml
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 灯光
+        view_layout:
+          grid-area: lights-area1
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.ci_wo_chuang_tou_kai_guan_you_left
+            name: 吸顶灯
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.ci_wo_men_kou_kai_guan_left
+            name: 筒灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ci_wo_chuang_tou_kai_guan_zuo
+            name: 床头灯
+            template:
+              - switch
+              - icon_spot
+          - type: custom:button-card
+            entity: switch.ci_wo_chuang_tou_kai_guan_you_right
+            name: 床头灯
+            template:
+              - switch
+              - icon_spot
+
+  #################################################
+  #                                               #
+  #                      KIDS                     #
+  #                                               #
+  #################################################
+  - theme: tablet
+    type: custom:grid-layout
+    title: KIDS
+    path: kids
+    layout:
+      #default
+      margin: 0
+      grid-gap: var(--custom-layout-card-padding)
+      # grid-template-columns: repeat(3, 1fr)  0
+      grid-template-columns: repeat(4, 1fr)  0
+      grid-template-rows: 0 repeat(1, fit-content(100%)) 0fr repeat(1, fit-content(100%))
+      grid-template-areas: |
+        "sidebar  .              .              .              ."
+        "sidebar  devices-area1  .              .              ."
+        "sidebar  .              .              .              ."
+        "sidebar  lights-area1   .              .              ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.7)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .              .              ."
+            ".  sidebar        sidebar        ."
+            ".  devices-area1  .              ."
+            ".  lights-area1   .              ."
+            ".  .              .              ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(2, fit-content(100%))
+          grid-template-areas: |
+            "sidebar  .              .              ."
+            "sidebar  devices-area1  .              ."
+            "sidebar  lights-area1   .              ."
+    cards:
+      - type: custom:button-card
+        view_layout:
+          grid-area: 1 / 2 / 2 / 5
+        name: SET THEME TO "tablet" IN PROFILE
+        tap_action:
+          action: navigate
+          navigation_path: /profile
+        styles:
+          card:
+            - display: >
+                [[[
+                  return hass.themes.theme === 'tablet'
+                      ? 'none'
+                      : 'initial';
+                ]]]
+          name:
+            - z-index: 1
+            - overflow: visible
+            - color: red
+            - font-weight: bolder
+            - font-size: xxx-large
+            - background: yellow
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.wo_de_jia_2
+          - type: grid
+            cards:
+              - type: custom:button-card
+                entity: weather.wo_de_jia_2
+                template:
+                  - colorfulclous
+                tap_action: !include popup/colorfulclous.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_access
+                tap_action: !include popup/access.yaml
+              - type: custom:button-card
+                template:
+                  - menu_button
+                  - icon_menu_back
+                tap_action:
+                  haptic: medium
+                  action: navigate
+                  navigation_path: /mattias-lovelace/overview
+                hold_action:
+                  action: none
+
+      #################################################
+      #                                               #
+      #                   DEVICES AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 设备
+        view_layout:
+          grid-area: devices-area1
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: cover.lumi_hagl08_d596_curtain
+            name: 窗帘
+            template:
+              - cover2
+              - icon_cover
+          - type: custom:button-card
+            entity: cover.lumi_hagl08_ccd4_curtain
+            name: 窗纱
+            template:
+              - cover2
+              - icon_cover
+          - type: custom:button-card
+            entity: climate.zhonghong_ac_0
+            name: 空调
+            # tap_action: !include popup/livingroom_climate.yaml
+            template:
+              - base
+              - climate3
+              - icon_climate3
+            tap_action: !include popup/climate_kids.yaml
+
+      #################################################
+      #                                               #
+      #                    LIGHTS AREA1               #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: 灯光
+        view_layout:
+          grid-area: lights-area1
+        columns: 2
+        cards:
+          - type: custom:button-card
+            entity: switch.er_tong_fang_chuang_bian_kai_guan_left
+            name: 吸顶灯
+            template:
+              - switch
+              - icon_light_belt
+          - type: custom:button-card
+            entity: switch.er_tong_fang_chuang_bian_kai_guan_right
+            name: 衣柜
+            template:
+              - switch
+              - icon_spot

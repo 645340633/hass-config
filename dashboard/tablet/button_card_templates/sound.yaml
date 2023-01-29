@@ -1,0 +1,267 @@
+sound_switch:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state_on == false && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+
+sound_area:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state_on == false && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  double_tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state_on == false && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+
+sound_popup_only:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+
+sound_tap_only:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+
+sound_cover:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state === 'off' && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  double_tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state === 'off' && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+
+sound_light:
+  variables:
+    entity_browser_mod: media_player.tablet
+    entity_tablet: light.tablet_screen
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state === 'off' && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+  hold_action:
+    ui_sound_tablet: |
+      [[[
+        let screen = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (screen === 'on') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/mattias/sound/popup.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
